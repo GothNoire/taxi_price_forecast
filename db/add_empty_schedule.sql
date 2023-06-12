@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE bookstore.add_empty_schedule(IN i_date_from timestamp without time zone, IN i_date_to timestamp without time zone, IN i_interval real, IN i_object_name_from text, IN i_object_name_to text)
+CREATE OR REPLACE PROCEDURE add_empty_schedule(IN i_date_from timestamp without time zone, IN i_date_to timestamp without time zone, IN i_interval real, IN i_object_name_from text, IN i_object_name_to text)
  LANGUAGE plpgsql
 AS $procedure$
 declare
@@ -17,7 +17,7 @@ begin
 		end if;
 	
 	    loop
-			INSERT INTO bookstore.taxi_roads_facts (area_id, taxi_class_id, currency_id, time_from, time_to, modified_date,
+			INSERT INTO taxi_roads_facts (area_id, taxi_class_id, currency_id, time_from, time_to, modified_date,
 												  price, waiting_time, distance, trave_time, coordinate_from, coordinate_to)
 			VALUES(0, 1, 1, l_date_buf ::timestamp ,l_date_buf + interval '15 minute' ,now(), null, null, null, null, (select ST_Transform(way, 4326)
 																														from planet_osm_point pop

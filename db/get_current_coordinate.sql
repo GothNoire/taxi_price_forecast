@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION bookstore.get_current_coordinate()
+CREATE OR REPLACE FUNCTION get_current_coordinate()
  RETURNS TABLE(latitude_from text, longitude_from text, latitude_to text, longitude_to text, id bigint, taxi_class_name_eng text)
  LANGUAGE sql
 AS $function$

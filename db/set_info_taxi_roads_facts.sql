@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION bookstore.set_info_taxi_roads_facts(i_id bigint
+CREATE OR REPLACE FUNCTION set_info_taxi_roads_facts(i_id bigint
 											, i_price double precision
 											, i_waiting_time double precision
 											, i_distance double precision

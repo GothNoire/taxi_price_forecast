@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 import requests
 import psycopg2
 from dotenv import load_dotenv
+import openweather
 import os
 
 path = os.path.join(os.path.dirname(__file__), '.env')
@@ -53,18 +54,29 @@ def set_info_taxi_roads_facts(current_coordinate) -> int:
             taxi_roads_info_id = rec[4]
             class_name = rec[5].replace(' ', '')
 
+            weather_data = openweather.get_weather_data(latitude=latitude_from, longitude=longitude_from)
+
             data = get_road_info(latitude_from=latitude_from,
                                  longitude_from=longitude_from,
                                  latintude_to=latitude_to,
                                  longitude_to=longitude_to,
                                  class_name=class_name)
-            print(data)
+
             price = data['options'][0]['price']
-            waiting_time = data['options'][0]['waiting_time']
+            waiting_time = data['options'][0]['waiting_time'] if data['options'][0]['waiting_time'] else None
             distance = data['distance']
             travel_time = data['time']
-            cursor.callproc('set_info_taxi_roads_facts',
-                            [taxi_roads_info_id, price, waiting_time, distance, travel_time])
+
+            cursor.callproc('set_info_taxi_roads_facts', [taxi_roads_info_id,
+                                                          price,
+                                                          waiting_time,
+                                                          distance,
+                                                          travel_time,
+                                                          openweather.is_rainy(weather_data),
+                                                          openweather.is_snowy(weather_data),
+                                                          openweather.get_current_temp(weather_data),
+                                                          openweather.get_cloud_percent(weather_data),
+                                                          openweather.get_wind_speed(weather_data)])
             conn.commit()
             is_update = cursor.fetchone()
 

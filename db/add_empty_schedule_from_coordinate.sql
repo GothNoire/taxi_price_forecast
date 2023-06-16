@@ -1,11 +1,7 @@
-CREATE OR REPLACE PROCEDURE add_empty_schedule_from_coordinate(IN i_date_from timestamp without time zone
-														, IN i_date_to timestamp without time zone
-														, IN i_lon_from text
-														, IN i_lat_from text
-														, in i_lon_to text
-														, in i_lat_to text)
+CREATE OR REPLACE function add_empty_schedule_from_coordinate(i_date_from timestamp without time zone, i_date_to timestamp without time zone, i_lon_from numeric, i_lat_from numeric, i_lon_to numeric, i_lat_to numeric)
+ RETURNS integer
  LANGUAGE plpgsql
-AS $procedure$
+AS $function$
 declare
 l_date_buf timestamp;
 l_date_hour_end timestamp;
@@ -18,7 +14,7 @@ begin
 		l_date_hour_end := date_trunc ('hour', l_date_buf) + interval '1 hour';
 		
 		if l_date_hour_end = date_trunc ('hour', i_date_to) then
-		   return;
+		   return 0;
 		end if;
 	
 	    loop
@@ -33,5 +29,6 @@ begin
 			exit when l_date_buf = l_date_hour_end;
 	    end loop;
     end loop;
-end; $procedure$
+   return l_taxi_roads_facts_id;
+end; $function$
 ;

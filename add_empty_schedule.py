@@ -22,7 +22,7 @@ cursor = conn.cursor()
 def add_empty_schedule(address_from: str, address_to: str):
     geo_data_from = geocoder.get_coordinate_by_address(address_from)
     geo_lat_from = geocoder.get_lat(geo_data_from)
-    geo_lon_from = geocoder.geo_lon(geo_data_from)
+    geo_lon_from = geocoder.get_lon(geo_data_from)
     geo_data_to = geocoder.get_coordinate_by_address(address_to)
     geo_lat_to = geocoder.get_lat(geo_data_to)
     geo_lon_to = geocoder.get_lat(geo_data_to)

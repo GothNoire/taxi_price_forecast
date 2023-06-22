@@ -21,3 +21,7 @@ def get_lat(geo_data: dict):
 
 def get_lon(geo_data: dict):
     return float(geo_data["geo_lon"]) if "geo_lon" in geo_data else None
+
+
+def get_city_district_name (geo_data: dict):
+    return geo_data["city_district"] if "city_district" in geo_data else None

@@ -14,7 +14,7 @@ CREATE TABLE taxi_class (
 
 
 
-CREATE TABLE bookstore.taxi_roads_facts (
+CREATE TABLE taxi_roads_facts (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
 	area_id int4 NOT NULL,
 	taxi_class_id int4 NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE bookstore.taxi_roads_facts (
 	waiting_time text NULL,
 	distance float4 NULL,
 	trave_time text NULL,
-	coordinate_from bookstore.geometry(point, 4326) NULL,
-	coordinate_to bookstore.geometry(point, 4326) NULL,
+	coordinate_from geometry(point, 4326) NULL,
+	coordinate_to geometry(point, 4326) NULL,
 	longitude_to text NULL,
 	latitude_to text NULL,
 	is_rainy int4 NULL,
@@ -38,11 +38,13 @@ CREATE TABLE bookstore.taxi_roads_facts (
 	clouds_percent float8 NULL,
 	current_temperature float8 NULL,
 	city_district_from text NULL,
+	city_district_to text NULL,
 	CONSTRAINT chk_is_rainy CHECK ((is_rainy = ANY (ARRAY[0, 1]))),
 	CONSTRAINT chk_is_snowy CHECK ((is_snowy = ANY (ARRAY[0, 1]))),
 	CONSTRAINT taxi_roads_facts_pk PRIMARY KEY (id)
 );
 
 
-ALTER TABLE bookstore.taxi_roads_facts ADD CONSTRAINT currency_taxi_roads_facts_fk FOREIGN KEY (currency_id) REFERENCES bookstore.currency(id);
-ALTER TABLE bookstore.taxi_roads_facts ADD CONSTRAINT taxi_class_taxi_roads_facts_fk FOREIGN KEY (taxi_class_id) REFERENCES bookstore.taxi_class(id);
+
+ALTER TABLE taxi_roads_facts ADD CONSTRAINT currency_taxi_roads_facts_fk FOREIGN KEY (currency_id) REFERENCES currency(id);
+ALTER TABLE taxi_roads_facts ADD CONSTRAINT taxi_class_taxi_roads_facts_fk FOREIGN KEY (taxi_class_id) REFERENCES taxi_class(id);

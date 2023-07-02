@@ -23,9 +23,12 @@ def add_empty_schedule(address_from: str, address_to: str):
     geo_data_from = geocoder.get_coordinate_by_address(address_from)
     geo_lat_from = geocoder.get_lat(geo_data_from)
     geo_lon_from = geocoder.get_lon(geo_data_from)
+    city_district_name_from = geocoder.get_city_district_name(geo_data_from)
+
     geo_data_to = geocoder.get_coordinate_by_address(address_to)
     geo_lat_to = geocoder.get_lat(geo_data_to)
     geo_lon_to = geocoder.get_lon(geo_data_to)
+    city_district_name_to = geocoder.get_city_district_name(geo_data_to)
     print(geo_data_from)
     print(geo_data_to)
 
@@ -36,9 +39,15 @@ def add_empty_schedule(address_from: str, address_to: str):
                      geo_lon_from,
                      geo_lat_from,
                      geo_lon_to,
-                     geo_lat_to
+                     geo_lat_to,
+                     city_district_name_from,
+                     city_district_name_to
                      ]
                     )
     conn.commit()
 
 add_empty_schedule(argv[1], argv[2])
+
+with open("add_empty_schedule_log.txt", "a") as file:
+    file.write(f'python3 add_empty_schedule.py \"{argv[1]}\" \"{argv[2]}\" \"{argv[3]}\"')
+    file.write('\n')

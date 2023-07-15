@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION bookstore.add_empty_schedule_from_coordinate(in i_date_from timestamp without time zone
+CREATE OR REPLACE FUNCTION add_empty_schedule_from_coordinate(in i_date_from timestamp without time zone
                                                                        , in i_date_to timestamp without time zone
                                                                        , in i_lon_from numeric
                                                                        , in i_lat_from numeric

@@ -48,3 +48,18 @@ CREATE TABLE taxi_roads_facts (
 
 ALTER TABLE taxi_roads_facts ADD CONSTRAINT currency_taxi_roads_facts_fk FOREIGN KEY (currency_id) REFERENCES currency(id);
 ALTER TABLE taxi_roads_facts ADD CONSTRAINT taxi_class_taxi_roads_facts_fk FOREIGN KEY (taxi_class_id) REFERENCES taxi_class(id);
+
+
+create table aggregate_taxi_roads (id int4 NOT NULL GENERATED ALWAYS AS IDENTITY
+                                  ,is_snowy integer
+                                  ,is_rainy integer
+                                  ,distance_travel float
+                                  ,time_from timestamp
+                                  ,time_to timestamp
+                                  ,avg_price float
+                                  ,median_price float
+                                  ,waiting_time float
+                                  ,road_traffic float
+                                  ,travel_time float
+                                  ,CONSTRAINT aggregate_taxi_roads_pk PRIMARY KEY (id)
+                                  );

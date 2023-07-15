@@ -51,15 +51,18 @@ ALTER TABLE taxi_roads_facts ADD CONSTRAINT taxi_class_taxi_roads_facts_fk FOREI
 
 
 create table aggregate_taxi_roads (id int4 NOT NULL GENERATED ALWAYS AS IDENTITY
-                                  ,is_snowy integer
-                                  ,is_rainy integer
-                                  ,distance_travel float
-                                  ,time_from timestamp
-                                  ,time_to timestamp
-                                  ,avg_price float
-                                  ,median_price float
-                                  ,waiting_time float
-                                  ,road_traffic float
-                                  ,travel_time float
-                                  ,CONSTRAINT aggregate_taxi_roads_pk PRIMARY KEY (id)
-                                  );
+								   ,is_snowy integer
+								   ,is_rainy integer
+								   ,distance_travel float
+								   ,time_from timestamp
+								   ,time_to timestamp
+								   ,avg_price float
+								   ,median_price float
+								   ,waiting_time float
+								   ,road_traffic float
+								   ,travel_time float
+								   ,city_district_from text
+								   ,city_district_to text
+								   ,CONSTRAINT aggregate_taxi_roads_pk PRIMARY KEY (id)
+								   );
+								   

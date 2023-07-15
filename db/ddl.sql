@@ -54,8 +54,8 @@ create table aggregate_taxi_roads (id int4 NOT NULL GENERATED ALWAYS AS IDENTITY
 								   ,is_snowy integer
 								   ,is_rainy integer
 								   ,distance_travel float
-								   ,time_from timestamp
-								   ,time_to timestamp
+								   ,time_from text
+								   ,time_to text
 								   ,avg_price float
 								   ,median_price float
 								   ,waiting_time float
@@ -64,5 +64,5 @@ create table aggregate_taxi_roads (id int4 NOT NULL GENERATED ALWAYS AS IDENTITY
 								   ,city_district_from text
 								   ,city_district_to text
 								   ,CONSTRAINT aggregate_taxi_roads_pk PRIMARY KEY (id)
+								   ,unique (is_snowy, is_rainy, distance_travel, time_from, city_district_from, city_district_to)
 								   );
-								   

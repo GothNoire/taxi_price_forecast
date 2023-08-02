@@ -19,7 +19,7 @@ conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, 
 cursor = conn.cursor()
 
 
-def add_empty_schedule(address_from: str, address_to: str):
+def add_empty_schedule(address_from: str, address_to: str, days):
     geo_data_from = geocoder.get_coordinate_by_address(address_from)
     geo_lat_from = geocoder.get_lat(geo_data_from)
     geo_lon_from = geocoder.get_lon(geo_data_from)
@@ -34,8 +34,9 @@ def add_empty_schedule(address_from: str, address_to: str):
 
     cursor.callproc('add_empty_schedule_from_coordinate',
                     [datetime.strptime(datetime.now().strftime('%y.%m.%d 00:00:00'), '%y.%m.%d %H:%M:%S'),
-                     datetime.strptime(datetime.strftime(datetime.now() + timedelta(days=+int(argv[3])), '%y.%m.%d %H:%M:%S'),
-                                       '%y.%m.%d %H:%M:%S'),
+                     datetime.strptime(
+                         datetime.strftime(datetime.now() + timedelta(days=+days), '%y.%m.%d %H:%M:%S'),
+                         '%y.%m.%d %H:%M:%S'),
                      geo_lon_from,
                      geo_lat_from,
                      geo_lon_to,
@@ -46,8 +47,3 @@ def add_empty_schedule(address_from: str, address_to: str):
                     )
     conn.commit()
 
-add_empty_schedule(argv[1], argv[2])
-
-with open("add_empty_schedule_log.txt", "a") as file:
-    file.write(f'python3 add_empty_schedule.py \"{argv[1]}\" \"{argv[2]}\" \"{argv[3]}\"')
-    file.write('\n')

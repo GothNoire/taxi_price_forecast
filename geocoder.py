@@ -15,6 +15,11 @@ def get_coordinate_by_address(address_name: str) -> dict:
     return response
 
 
+def get_address_by_coordinate (lat: str, lon: str) -> dict:
+    dadata = Dadata(geo_token, geo_secret)
+    response = dadata.geolocate(name="address", lat=lat, lon=lon)
+    return response
+
 def get_lat(geo_data: dict):
     return float(geo_data["geo_lat"]) if "geo_lat" in geo_data else None
 

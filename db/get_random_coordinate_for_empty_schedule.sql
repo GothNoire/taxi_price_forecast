@@ -1,9 +1,8 @@
 create or replace function get_random_coordinate_for_empty_schedule ()
-returns table (lat text, lon text)
+returns text 
 language sql
 as $get_random_coordinate_for_empty_schedule$
-  select get_latitude (st_astext(ST_Transform(way, 4326))) lat
-        ,get_longitude (st_astext(ST_Transform(way, 4326))) lon
+  select st_astext(ST_Transform(way, 4326)) coordinate
   from planet_osm_point pop 
   where pop."name" is not null
     and round (cast (get_latitude (st_astext(ST_Transform(way, 4326))) as numeric),5 ) between 53.17976 and 53.28380

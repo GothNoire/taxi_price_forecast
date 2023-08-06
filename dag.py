@@ -1,41 +1,24 @@
+from airflow import DAG
+from airflow.utils.dates import days_ago
+from airflow.operators.python import PythonOperator
+import requests
+import psycopg2
+from dotenv import load_dotenv
 import openweather
 import os
-import psycopg2
-import requests
-
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.utils.dates import days_ago
-from dotenv import load_dotenv
-
+import taxi_plan_cost
 
 path = os.path.join(os.path.dirname(__file__), '.env')
 if os.path.exists(path):
     load_dotenv(path)
-clid = os.getenv("CLID")
-apikey = os.getenv("APIKEY")
 dbname = os.getenv("DBNAME")
 user = os.getenv("DBUSER")
 password = os.getenv("PASSWORD")
 host = os.getenv("HOST")
 port = os.getenv("PORT")
 
-
 conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
 cursor = conn.cursor()
-
-
-def get_road_info(latitude_from, longitude_from, latintude_to, longitude_to, class_name):
-    url = 'https://taxi-routeinfo.taxi.yandex.net/taxi_info'
-    params = {
-        'clid': clid,
-        'apikey': apikey,
-        'rll': f'{longitude_from},{latitude_from}~{longitude_to},{latintude_to}',
-        'lang': 'ru',
-        'class': class_name
-    }
-    response = requests.get(url=url, params=params)
-    return response.json()
 
 
 def get_current_coordinate() -> list:
@@ -58,34 +41,27 @@ def set_info_taxi_roads_facts(current_coordinate) -> int:
 
             weather_data = openweather.get_weather_data(latitude=latitude_from, longitude=longitude_from)
 
-            data = get_road_info(
-                latitude_from=latitude_from,
-                longitude_from=longitude_from,
-                latintude_to=latitude_to,
-                longitude_to=longitude_to,
-                class_name=class_name,
-            )
+            data = taxi_plan_cost.get_road_info(latitude_from=latitude_from,
+                                                longitude_from=longitude_from,
+                                                latintude_to=latitude_to,
+                                                longitude_to=longitude_to,
+                                                class_name=class_name)
 
             price = data['options'][0]['price']
             waiting_time = data['options'][0]['waiting_time'] if data['options'][0]['waiting_time'] else None
             distance = data['distance']
             travel_time = data['time']
 
-            cursor.callproc(
-                'set_info_taxi_roads_facts',
-                [
-                    taxi_roads_info_id,
-                    price,
-                    waiting_time,
-                    distance,
-                    travel_time,
-                    openweather.is_rainy(weather_data),
-                    openweather.is_snowy(weather_data),
-                    openweather.get_current_temp(weather_data),
-                    openweather.get_cloud_percent(weather_data),
-                    openweather.get_wind_speed(weather_data),
-                ]
-            )
+            cursor.callproc('set_info_taxi_roads_facts', [taxi_roads_info_id,
+                                                          price,
+                                                          waiting_time,
+                                                          distance,
+                                                          travel_time,
+                                                          openweather.is_rainy(weather_data),
+                                                          openweather.is_snowy(weather_data),
+                                                          openweather.get_current_temp(weather_data),
+                                                          openweather.get_cloud_percent(weather_data),
+                                                          openweather.get_wind_speed(weather_data)])
             conn.commit()
             is_update = cursor.fetchone()
 
@@ -96,16 +72,15 @@ def start_python_operator():
     return set_info_taxi_roads_facts(get_current_coordinate())
 
 
-dag = DAG(
-    dag_id='road_taxi',
-    schedule_interval='*/15 * * * *',
-    start_date=days_ago(1),
-)
+dag = DAG(dag_id='road_taxi',
+          schedule_interval='*/15 * * * *',
+          start_date=days_ago(1)
+          )
 
 set_road_info = PythonOperator(
     task_id='set_road_info',
     python_callable=start_python_operator,
-    dag=dag,
+    dag=dag
 )
 
 set_road_info

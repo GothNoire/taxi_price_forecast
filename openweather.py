@@ -22,8 +22,8 @@ def get_forecast_weather_data(lat, lon, days):
     return response.json()
 
 
-def get_forecast_weather_by_date(forecast_weather_data, weather_param, day):
-    hour = datetime.strftime(forecast_weather_data, '%H')
+def get_forecast_weather_by_date(forecast_weather_data, weather_param, day, hour):
+    #hour = datetime.strftime(forecast_weather_data, '%H')
     return forecast_weather_data['forecast']['forecastday'][day]['hour'][hour][weather_param] if weather_param in forecast_weather_data['forecast']['forecastday'][day]['hour'][hour] else None
 
 
